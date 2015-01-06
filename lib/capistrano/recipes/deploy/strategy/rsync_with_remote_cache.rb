@@ -24,9 +24,17 @@ module Capistrano
         default_attribute :repository_cache, 'cached-copy'
 
         def deploy!
+          configuration.trigger('strategy:before:update_local_cache')
           update_local_cache
+          configuration.trigger('strategy:after:update_local_cache')
+
+          configuration.trigger('strategy:before:update_remote_cache')
           update_remote_cache
+          configuration.trigger('strategy:after:update_remote_cache')
+
+          configuration.trigger('strategy:before:copy_remote_cache')
           copy_remote_cache
+          configuration.trigger('strategy:after:copy_remote_cache')
         end
 
         def update_local_cache
